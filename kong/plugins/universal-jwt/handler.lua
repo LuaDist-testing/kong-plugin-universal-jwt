@@ -64,8 +64,10 @@ end
 ---[[ runs in the 'access_by_lua_block'
 function plugin:access(plugin_conf)
   plugin.super.access(self)
+  print "running universal-jwt plugin"
 
   if ngx.ctx.plugins_for_request["key-auth"] ~= nil then
+    print "key auth plugin found, adding jwt"
     add_jwt()
   end
 end --]]
