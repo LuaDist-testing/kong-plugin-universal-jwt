@@ -82,7 +82,8 @@ describe("universal-jwt plugin (access)", function()
         method = "GET",
         path = "/request?apikey=apikey1",
         headers = {
-          host = "test1.com"
+          host = "test1.com",
+          ["x-localz-deviceid"] = "device1"
         }
       })
       assert.response(r).has.status(200)

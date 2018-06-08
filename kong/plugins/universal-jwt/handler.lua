@@ -51,6 +51,10 @@ local function add_jwt()
       }
     }
   )
+  ngx.log(ngx.INFO, "key auth plugin found, adding jwt for consumer " .. consumer.username)
+  if (ngx.req.get_headers()["x-localz-deviceid"]) then
+    ngx.log(ngx.INFO, "x-localz-deviceid: " .. ngx.req.get_headers()["x-localz-deviceid"])
+  end
   ngx.req.set_header("Authorization", "Bearer " .. jwt_token)
 
 end
@@ -64,10 +68,8 @@ end
 ---[[ runs in the 'access_by_lua_block'
 function plugin:access(plugin_conf)
   plugin.super.access(self)
-  print "running universal-jwt plugin"
 
   if ngx.ctx.plugins_for_request["key-auth"] ~= nil then
-    print "key auth plugin found, adding jwt"
     add_jwt()
   end
 end --]]
