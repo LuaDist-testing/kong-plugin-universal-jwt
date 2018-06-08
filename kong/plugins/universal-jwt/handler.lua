@@ -51,7 +51,7 @@ local function add_jwt()
       }
     }
   )
-  ngx.header["Authorization"] = "Bearer " .. jwt_token
+  ngx.req.set_header("Authorization", "Bearer " .. jwt_token)
 
 end
 

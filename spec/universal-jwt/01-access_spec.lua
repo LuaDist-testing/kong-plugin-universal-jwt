@@ -17,15 +17,17 @@ describe("universal-jwt plugin (access)", function()
   local consumer_groups = {"admin", "owner"}
 
   setup(function()
+    helpers.run_migrations()
+
     local api1 = assert(helpers.dao.apis:insert { 
         name = "api-1", 
         hosts = { "test1.com" }, 
-        upstream_url = "http://mockbin.com",
+        upstream_url = helpers.mock_upstream_url
     })
     local api2 = assert(helpers.dao.apis:insert { 
         name = "api-2", 
         hosts = { "test2.com" }, 
-        upstream_url = "http://mockbin.com",
+        upstream_url = helpers.mock_upstream_url
     })
 
     assert(helpers.dao.plugins:insert {
@@ -56,7 +58,10 @@ describe("universal-jwt plugin (access)", function()
       consumer_id = consumer1.id
     })
 
-    assert(helpers.start_kong {custom_plugins = "universal-jwt"})
+    assert(helpers.start_kong({
+      nginx_conf = "spec/fixtures/custom_nginx.template",
+      custom_plugins = "universal-jwt"
+    }))
   end)
 
   teardown(function()
@@ -81,7 +86,7 @@ describe("universal-jwt plugin (access)", function()
         }
       })
       assert.response(r).has.status(200)
-      local auth_header = assert.response(r).has.header("Authorization")
+      local auth_header = assert.request(r).has.header("Authorization")
       local token = auth_header:sub(8)
       local header, claims, signature = token:match("([^.]*).([^.]*).(.*)")
       claims = cjson.decode(ngx.decode_base64(claims))
@@ -98,7 +103,7 @@ describe("universal-jwt plugin (access)", function()
         }
       })
       assert.response(r).has.status(200)
-      assert.response(r).has_not.header("Authorization")
+      assert.request(r).has_not.header("Authorization")
     end)
   end)
 end)
