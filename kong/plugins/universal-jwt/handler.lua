@@ -1,7 +1,6 @@
 local singletons = require "kong.singletons"
 local table_insert = table.insert
 local jwt = require "resty.jwt"
-local inspect = require "inspect"
 local constants = require "kong.constants"
 local env = require '/kong/plugins/universal-jwt/env' -- relative paths don't work for some reason ???
 
