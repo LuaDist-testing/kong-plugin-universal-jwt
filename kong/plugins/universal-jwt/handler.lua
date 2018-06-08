@@ -66,10 +66,7 @@ function plugin:access(plugin_conf)
   plugin.super.access(self)
 
   if ngx.ctx.plugins_for_request["key-auth"] ~= nil then
-    print "key auth plugin found"
     add_jwt()
-  else
-    print "No key auth plugin found, doing nothing"
   end
 end --]]
 
